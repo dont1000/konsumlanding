@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <title>Konsum App Icon — 01 Plus / Diamond</title>
+  <defs>
+    <clipPath id="squircle">
+      <path d="M 512 0 C 870 0 1024 154 1024 512 C 1024 870 870 1024 512 1024 C 154 1024 0 870 0 512 C 0 154 154 0 512 0 Z"></path>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#squircle)">
+    <rect x="0" y="0" width="1024" height="1024" fill="#143629"></rect>
+    <path d="M 512 192 L 832 512 L 512 832 L 192 512 Z" fill="#B2DC86"></path>
+    <g fill="#143629">
+      <rect x="472" y="372" width="80" height="280" rx="4"></rect>
+      <rect x="372" y="472" width="280" height="80" rx="4"></rect>
+    </g>
+  </g>
+</svg>

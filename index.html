@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Konsum — Wissen, wohin dein Geld im Alltag geht</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous">
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=Hanken+Grotesk:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --forest: #1B4332;
+    --forest-deep: #143629;
+    --accent: #2C7A52;
+    --fresh: #8FCBA5;
+    --lime: #B2DC86;
+    --pale: #E4F1E8;
+    --bg: #F3F6F0;
+    --ink: #16271D;
+    --ink-soft: rgba(22, 39, 29, 0.66);
+    --display: "Bricolage Grotesque", "Hanken Grotesk", sans-serif;
+    --body: "Hanken Grotesk", sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    font-family: var(--body);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 17px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  :focus-visible { outline: 3px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- Buttons ---------- */
+  .btn {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--body); font-weight: 700; font-size: 17px;
+    text-decoration: none; border-radius: 999px;
+    padding: 16px 30px; transition: transform 0.15s ease, background 0.15s ease, box-shadow 0.15s ease;
+  }
+  .btn-primary { background: var(--forest); color: #fff; box-shadow: 0 10px 28px rgba(27, 67, 50, 0.28); }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-2px); }
+  .btn-ghost { color: var(--forest); padding: 16px 8px; font-weight: 600; text-decoration: none; }
+  .btn-ghost:hover { color: var(--accent); }
+  .btn-light { background: var(--lime); color: var(--forest-deep); box-shadow: 0 10px 28px rgba(0, 0, 0, 0.25); }
+  .btn-light:hover { background: #c3e69b; transform: translateY(-2px); }
+
+  /* ---------- Header ---------- */
+  header {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(243, 246, 240, 0.86);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(22, 39, 29, 0.07);
+  }
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 14px 28px; max-width: 1160px; margin: 0 auto; }
+  .brand { display: flex; align-items: center; gap: 11px; text-decoration: none; }
+  .brand img { width: 32px; height: 32px; border-radius: 9px; }
+  .brand span { font-family: var(--display); font-weight: 700; font-size: 21px; letter-spacing: -0.01em; }
+  .nav .btn { padding: 10px 22px; font-size: 15px; }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; overflow: hidden; }
+  .hero-bg {
+    position: absolute; inset: 0; pointer-events: none;
+    background:
+      radial-gradient(640px 480px at 78% 22%, rgba(143, 203, 165, 0.30), transparent 70%),
+      radial-gradient(520px 420px at 8% 90%, rgba(228, 241, 232, 0.9), transparent 70%);
+  }
+  .hero-grid {
+    position: relative;
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 48px;
+    align-items: center; padding: 72px 0 96px;
+  }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--pale); color: var(--forest);
+    font-weight: 700; font-size: 13.5px; letter-spacing: 0.06em; text-transform: uppercase;
+    border-radius: 999px; padding: 7px 16px; margin-bottom: 26px;
+  }
+  .eyebrow::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  h1 {
+    font-family: var(--display); font-weight: 700;
+    font-size: clamp(40px, 5.2vw, 62px); line-height: 1.04; letter-spacing: -0.025em;
+    text-wrap: balance; margin-bottom: 22px;
+  }
+  h1 .hl { color: var(--accent); }
+  .hero p.lede { font-size: 19.5px; color: var(--ink-soft); max-width: 33em; text-wrap: pretty; margin-bottom: 34px; }
+  .cta-row { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+  .hero-meta { display: flex; gap: 22px; flex-wrap: wrap; margin-top: 36px; font-size: 14.5px; color: var(--ink-soft); font-weight: 600; }
+  .hero-meta span { display: inline-flex; align-items: center; gap: 7px; }
+  .hero-meta span::before { content: "✓"; color: var(--accent); font-weight: 800; }
+
+  /* staggered screens */
+  .stage { position: relative; min-height: 620px; }
+  .device {
+    position: relative; z-index: 3;
+    width: min(300px, 78vw); margin: 0 auto;
+    background: var(--forest-deep); border-radius: 50px; padding: 11px;
+    box-shadow: 0 40px 80px rgba(20, 54, 41, 0.35), 0 8px 24px rgba(20, 54, 41, 0.18);
+  }
+  .device img { display: block; width: 100%; border-radius: 40px; }
+  .float-screen {
+    position: absolute; z-index: 2; top: 48px; right: -28px;
+    width: 224px; height: 296px; overflow: hidden;
+    border-radius: 26px; background: #fff;
+    box-shadow: 0 26px 56px rgba(20, 54, 41, 0.22);
+    transform: rotate(3deg);
+  }
+  .float-screen img { width: 130%; display: block; object-fit: cover; object-position: 50% 31%; height: 100%; margin-left: -15%; }
+  .float-chip {
+    position: absolute; z-index: 4; left: -16px; bottom: 110px;
+    display: flex; align-items: center; gap: 10px;
+    background: #fff; border-radius: 999px; padding: 11px 18px;
+    font-weight: 700; font-size: 15px;
+    box-shadow: 0 18px 40px rgba(20, 54, 41, 0.20);
+  }
+  .float-chip .cat { background: var(--pale); border-radius: 999px; padding: 3px 11px; font-size: 13.5px; color: var(--forest); font-weight: 700; }
+  @media (prefers-reduced-motion: no-preference) {
+    .float-chip { animation: bob 5s ease-in-out infinite; }
+    @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+  }
+
+  /* ---------- Trust strip ---------- */
+  .strip { border-top: 1px solid rgba(22, 39, 29, 0.08); border-bottom: 1px solid rgba(22, 39, 29, 0.08); background: rgba(228, 241, 232, 0.45); }
+  .strip-inner { display: flex; justify-content: center; gap: clamp(20px, 5vw, 64px); flex-wrap: wrap; padding: 18px 28px; font-weight: 600; font-size: 15px; color: var(--forest); }
+  .strip-inner span { display: inline-flex; align-items: center; gap: 8px; }
+  .strip-inner span::before { content: ""; width: 7px; height: 7px; background: var(--fresh); border-radius: 50%; }
+
+  /* ---------- Sections / headings ---------- */
+  .section { padding: 100px 0; }
+  .section-head { max-width: 680px; margin: 0 auto 60px; text-align: center; }
+  .kicker { font-weight: 700; font-size: 14px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  h2 { font-family: var(--display); font-weight: 700; font-size: clamp(30px, 3.6vw, 44px); line-height: 1.08; letter-spacing: -0.02em; text-wrap: balance; }
+  .section-head p { margin-top: 16px; color: var(--ink-soft); font-size: 18.5px; text-wrap: pretty; }
+
+  /* ---------- Animated sequence (the magic loop) ---------- */
+  .loop { background: linear-gradient(180deg, var(--bg), #eaf3ec); border-top: 1px solid rgba(22, 39, 29, 0.06); border-bottom: 1px solid rgba(22, 39, 29, 0.06); }
+  .seq { position: relative; max-width: 540px; margin: 0 auto; }
+  .input-pill {
+    display: flex; align-items: center; gap: 14px;
+    background: #fff; color: var(--ink); border-radius: 18px;
+    padding: 18px 20px; font-size: clamp(16px, 2.4vw, 19px); font-weight: 600;
+    box-shadow: 0 18px 44px rgba(20, 54, 41, 0.14);
+  }
+  .typed { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; }
+  .caret { display: inline-block; width: 2px; height: 1.05em; background: var(--accent); vertical-align: -2px; flex: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .caret { animation: blink 1s steps(2) infinite; }
+    @keyframes blink { 50% { opacity: 0; } }
+  }
+  .mode-icon { flex: none; width: 38px; height: 38px; border-radius: 50%; background: var(--pale); display: grid; place-items: center; color: var(--accent); }
+  .mode-icon .glyph { width: 16px; height: 16px; border: 2px solid var(--accent); border-radius: 5px 5px 7px 7px; }
+  .mode-icon .bars { display: none; align-items: flex-end; gap: 3px; height: 16px; }
+  .mode-icon .bars i { width: 3px; background: var(--accent); border-radius: 2px; height: 6px; }
+  .seq.speaking .mode-icon .glyph { display: none; }
+  .seq.speaking .mode-icon .bars { display: flex; }
+  @media (prefers-reduced-motion: no-preference) {
+    .seq.speaking .bars i { animation: bar 0.8s ease-in-out infinite; }
+    .seq.speaking .bars i:nth-child(2) { animation-delay: 0.15s; }
+    .seq.speaking .bars i:nth-child(3) { animation-delay: 0.3s; }
+    .seq.speaking .bars i:nth-child(4) { animation-delay: 0.45s; }
+    @keyframes bar { 0%, 100% { height: 6px; } 50% { height: 16px; } }
+  }
+  .flow { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 16px 0; min-height: 86px; justify-content: center; }
+  .flow-track { width: 2px; height: 30px; border-radius: 2px; background: rgba(44, 122, 82, 0.18); position: relative; overflow: hidden; }
+  .flow-track i { position: absolute; left: 0; width: 100%; height: 10px; border-radius: 2px; background: var(--accent); top: -10px; }
+  .seq.processing .flow-track i { animation: drop 0.9s ease-in infinite; }
+  @media (prefers-reduced-motion: reduce) { .seq.processing .flow-track i { animation: none; top: 10px; } }
+  @keyframes drop { to { top: 30px; } }
+  .flow-label { font-size: 14px; font-weight: 600; color: var(--ink-soft); opacity: 0; transition: opacity 0.3s ease; }
+  .seq.processing .flow-label { opacity: 1; }
+
+  .result {
+    background: #fff; color: var(--ink); border-radius: 22px; padding: 22px 24px;
+    box-shadow: 0 22px 52px rgba(20, 54, 41, 0.16);
+    opacity: 0; transform: translateY(14px) scale(0.98);
+    transition: opacity 0.45s ease, transform 0.45s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+  }
+  .seq.resolved .result { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .result { transition: opacity 0.3s ease; transform: none; } .seq .rtag { opacity: 1; transform: none; } }
+  .result-head { font-size: 12.5px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px; }
+  .result-loc { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-bottom: 13px; border-bottom: 1px solid rgba(22, 39, 29, 0.10); }
+  .result-loc .loc { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; font-size: 16px; }
+  .result-loc .loc-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--accent); flex: none; }
+  .result-loc .date { font-size: 14px; font-weight: 600; color: var(--ink-soft); }
+  .result-items { display: flex; flex-direction: column; }
+  .ritem { padding: 14px 0; border-bottom: 1px solid rgba(22, 39, 29, 0.08); }
+  .ritem-top { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; }
+  .ritem-name { font-weight: 700; font-size: 16.5px; }
+  .ritem-amt { font-family: var(--display); font-weight: 700; font-size: 18px; letter-spacing: -0.01em; white-space: nowrap; }
+  .ritem-tags { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 10px; }
+  .rtag { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 5px 11px; font-size: 12.5px; font-weight: 700; white-space: nowrap; opacity: 0; transform: translateY(5px); transition: opacity 0.4s ease, transform 0.4s ease; }
+  .seq.resolved .rtag { opacity: 1; transform: none; }
+  .rtag.cat { background: var(--pale); color: var(--forest); }
+  .rtag.sub { background: rgba(143, 203, 165, 0.30); color: var(--forest); }
+  .result-total { display: flex; align-items: center; justify-content: space-between; padding-top: 14px; }
+  .result-total span:first-child { color: var(--ink-soft); font-size: 14.5px; font-weight: 600; }
+  .result-total span:last-child { font-family: var(--display); font-weight: 700; font-size: 20px; letter-spacing: -0.01em; }
+  .result-actions { display: flex; gap: 10px; margin-top: 18px; }
+  .ra-save { flex: 1; text-align: center; background: var(--forest); color: #fff; border-radius: 999px; padding: 12px; font-weight: 700; font-size: 14.5px; }
+  .ra-edit { flex: none; text-align: center; background: #fff; color: var(--forest); box-shadow: inset 0 0 0 1.5px rgba(22, 39, 29, 0.18); border-radius: 999px; padding: 12px 22px; font-weight: 700; font-size: 14.5px; }
+  .seq-caption { text-align: center; margin-top: 28px; font-size: 12.5px; color: rgba(22, 39, 29, 0.42); letter-spacing: 0.01em; }
+
+  /* ---------- Generous feature rows ---------- */
+  .feature { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(40px, 6vw, 88px); align-items: center; }
+  .feature + .feature { margin-top: clamp(72px, 9vw, 116px); }
+  .feature.flip .feature-media { order: 2; }
+  .feature-num { font-family: var(--display); font-weight: 700; font-size: 17px; letter-spacing: 0.08em; color: var(--fresh); margin-bottom: 16px; }
+  .feature-copy h3 { font-family: var(--display); font-weight: 700; font-size: clamp(26px, 3vw, 36px); line-height: 1.12; letter-spacing: -0.02em; margin-bottom: 16px; text-wrap: balance; }
+  .feature-copy p { color: var(--ink-soft); font-size: 18px; text-wrap: pretty; max-width: 30em; }
+  .feature-tokens { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 24px; }
+  .token { background: #fff; border: 1px solid rgba(22, 39, 29, 0.1); border-radius: 999px; padding: 8px 15px; font-weight: 600; font-size: 14.5px; color: var(--forest); box-shadow: 0 3px 10px rgba(20, 54, 41, 0.05); }
+  .token.solid { background: var(--pale); border-color: transparent; }
+
+  .feature-media { display: flex; justify-content: center; }
+  .feature-device {
+    position: relative; width: min(290px, 80%);
+    background: var(--forest-deep); border-radius: 48px; padding: 11px;
+    box-shadow: 0 40px 80px rgba(20, 54, 41, 0.30), 0 8px 24px rgba(20, 54, 41, 0.16);
+  }
+  .feature-device img { display: block; width: 100%; border-radius: 38px; }
+  .feature-media .halo { position: absolute; inset: -8% -12%; z-index: -1; border-radius: 50%;
+    background: radial-gradient(closest-side, rgba(143, 203, 165, 0.4), transparent 75%); }
+
+  /* ---------- Nicht-Block ---------- */
+  .nicht { background: #fff; border-radius: 32px; padding: clamp(36px, 5vw, 64px); box-shadow: 0 2px 6px rgba(22, 39, 29, 0.05), 0 22px 48px rgba(22, 39, 29, 0.07); }
+  .nicht .kicker { text-align: left; }
+  .nicht-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px 44px; margin-top: 40px; }
+  .nicht-item { display: flex; gap: 16px; align-items: flex-start; }
+  .nicht-x { flex: none; width: 34px; height: 34px; border-radius: 12px; background: var(--pale); color: var(--forest); display: grid; place-items: center; font-weight: 800; font-size: 16px; margin-top: 2px; }
+  .nicht-item h3 { font-family: var(--display); font-size: 19px; font-weight: 700; margin-bottom: 4px; }
+  .nicht-item p { color: var(--ink-soft); font-size: 15.5px; text-wrap: pretty; }
+
+  /* ---------- Beta CTA ---------- */
+  .beta { background: var(--forest); color: #fff; border-radius: 36px; overflow: hidden; position: relative; }
+  .beta::before { content: ""; position: absolute; inset: 0; background: radial-gradient(560px 360px at 85% 0%, rgba(178, 220, 134, 0.22), transparent 70%); }
+  .beta-inner { position: relative; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 40px; align-items: center; padding: clamp(40px, 6vw, 72px); }
+  .beta img.icon { width: 60px; height: 60px; border-radius: 16px; margin-bottom: 24px; box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3); }
+  .beta h2 { color: #fff; margin-bottom: 14px; }
+  .beta p { color: rgba(255, 255, 255, 0.78); max-width: 30em; text-wrap: pretty; margin-bottom: 30px; }
+  .beta-note { font-size: 14px; color: rgba(255, 255, 255, 0.62); margin-top: 16px; margin-bottom: 0 !important; }
+  .beta-shot { height: 100%; min-height: 320px; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 56px rgba(0, 0, 0, 0.32); transform: rotate(2deg); }
+  .beta-shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 12%; display: block; }
+
+  /* ---------- Footer ---------- */
+  footer { padding: 44px 0 56px; }
+  .foot { display: flex; justify-content: space-between; align-items: center; gap: 18px; flex-wrap: wrap; color: var(--ink-soft); font-size: 14.5px; }
+  .foot-links { display: flex; gap: 26px; }
+  .foot a { text-decoration: none; font-weight: 600; color: var(--forest); }
+  .foot a:hover { color: var(--accent); text-decoration: underline; }
+
+  /* ---------- Reveal ---------- */
+  .reveal { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal { opacity: 0; transform: translateY(22px); transition: opacity 0.7s ease, transform 0.7s ease; }
+    .reveal.in { opacity: 1; transform: none; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 920px) {
+    .hero-grid { grid-template-columns: 1fr; padding: 52px 0 72px; gap: 56px; }
+    .stage { min-height: 0; padding-bottom: 30px; }
+    .float-screen { right: max(-12px, calc(50% - 280px)); }
+    .float-chip { left: max(-6px, calc(50% - 290px)); }
+    .section { padding: 72px 0; }
+    .feature { grid-template-columns: 1fr; gap: 36px; max-width: 460px; margin-left: auto; margin-right: auto; }
+    .feature.flip .feature-media { order: 0; }
+    .feature-copy { text-align: center; }
+    .feature-copy p { margin-left: auto; margin-right: auto; }
+    .feature-tokens { justify-content: center; }
+    .nicht-grid { grid-template-columns: 1fr; }
+    .beta-inner { grid-template-columns: 1fr; }
+    .beta-shot { display: none; }
+  }
+  @media (max-width: 480px) {
+    .float-screen { display: none; }
+    h1 { font-size: 38px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="nav" aria-label="Hauptnavigation">
+    <a class="brand" href="#"><img src="assets/konsum-icon.svg" alt=""><span>Konsum</span></a>
+    <a class="btn btn-primary" href="#beta">Beta beitreten</a>
+  </nav>
+</header>
+
+<main>
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="wrap hero-grid">
+      <div>
+        <span class="eyebrow">Beta für iOS · TestFlight</span>
+        <h1>Sieh, wohin dein Geld im Alltag <span class="hl">wirklich</span> geht.</h1>
+        <p class="lede">Konsum erfasst Alltagsausgaben in Sekunden, sortiert sie automatisch ein — und ein weicher Tagesrahmen gibt dir Orientierung. Ohne Kontoverbindung, ohne Haushaltsbuch.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#beta">Beta beitreten</a>
+          <a class="btn btn-ghost" href="#loop">So funktioniert's ↓</a>
+        </div>
+        <div class="hero-meta">
+          <span>Keine Kontoverbindung</span>
+          <span>ca.-Werte statt falscher Präzision</span>
+        </div>
+      </div>
+      <div class="stage" aria-label="Echte Ansichten aus der Konsum-App">
+        <div class="float-screen">
+          <img src="assets/screen-analytics.png" alt="Konsum-App: Analyse der teuersten Artikel als farbige Kategorie-Kreise">
+        </div>
+        <div class="device">
+          <img src="assets/screen-home.png" alt="Konsum-App Home-Screen: grüner Budget-Ring mit verbleibendem Betrag und Spielraum heute">
+        </div>
+        <div class="float-chip" aria-hidden="true">
+          <span class="cat">☕ Kaffee &amp; Getränke</span>
+          <span>3,50 €</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TRUST STRIP -->
+  <div class="strip">
+    <div class="strip-inner">
+      <span>Erfassen in Sekunden</span>
+      <span>KI sortiert automatisch</span>
+      <span>Budget als Orientierung</span>
+    </div>
+  </div>
+
+  <!-- ANIMIERTE SEQUENZ -->
+  <section class="section loop" id="loop">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="kicker">Der Moment der Erfassung</p>
+        <h2>Ein Satz wird zur fertigen Ausgabe.</h2>
+        <p>Sag oder tippe, was du gekauft hast — auch mehrere Posten auf einmal. Die KI liest Ort, Beträge, Kategorie und Unterkategorie und legt dir alles zum kurzen Prüfen vor.</p>
+      </div>
+      <div class="seq reveal" id="seq" aria-label="Beispiel: Aus einem Satz wird eine kategorisierte Ausgabe">
+        <div class="input-pill">
+          <span class="mode-icon" aria-hidden="true">
+            <span class="glyph"></span>
+            <span class="bars"><i></i><i></i><i></i><i></i></span>
+          </span>
+          <span class="typed" id="typed"></span><span class="caret" id="caret"></span>
+        </div>
+        <div class="flow" aria-hidden="true">
+          <span class="flow-track"><i></i></span>
+          <span class="flow-label">KI liest Betrag, Ort und Kategorie …</span>
+        </div>
+        <div class="result" id="result">
+          <div class="result-head">✓ Erkannt · bitte kurz prüfen</div>
+          <div class="result-loc">
+            <span class="loc"><span class="loc-dot" aria-hidden="true"></span><span id="seq-place">Bäcker</span></span>
+            <span class="date">heute</span>
+          </div>
+          <div class="result-items" id="seq-items"></div>
+          <div class="result-total"><span>Gesamt</span><span id="seq-total">4,70 €</span></div>
+          <div class="result-actions" aria-hidden="true">
+            <span class="ra-save">✓ Speichern</span>
+            <span class="ra-edit">Bearbeiten</span>
+          </div>
+        </div>
+        <p class="seq-caption">Beispielhafte Erkennung · in der App prüfst du das Ergebnis kurz.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- GENERÖSE FEATURE-BLÖCKE -->
+  <section class="section" id="saeulen">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <p class="kicker">Drei Dinge, die zusammenspielen</p>
+        <h2>Erfassen. Sortieren. Einordnen.</h2>
+        <p>Keine Säule trägt allein — zusammen wird aus losen Alltagskäufen ein verständliches Bild deines Konsums.</p>
+      </div>
+
+      <!-- Feature 1 -->
+      <article class="feature reveal">
+        <div class="feature-media">
+          <div class="feature-device"><span class="halo" aria-hidden="true"></span><img src="assets/screen-erfassen-v2.png" alt="Konsum-App: Ausgabe erfassen per schneller Eingabe, Foto, Datei-Upload oder E-Mail"></div>
+        </div>
+        <div class="feature-copy">
+          <p class="feature-num">01 — ERFASSEN</p>
+          <h3>Schneller als vergessen</h3>
+          <p>Belegfoto, Upload, E-Mail, Formular — oder unterwegs einfach ein Satz, getippt oder gesprochen: „Bäcker Cappuccino 3,50".</p>
+          <div class="feature-tokens">
+            <span class="token">Belegfoto</span>
+            <span class="token">Upload</span>
+            <span class="token">E-Mail</span>
+            <span class="token">Formular</span>
+            <span class="token solid">Ein getippter Satz</span>
+            <span class="token solid">Gesprochen</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Feature 2 -->
+      <article class="feature flip reveal">
+        <div class="feature-media">
+          <div class="feature-device"><span class="halo" aria-hidden="true"></span><img src="assets/screen-kategorien.png" alt="Konsum-App: Ausgaben automatisch nach Kategorien sortiert, z. B. Lebensmittel und Mobilität"></div>
+        </div>
+        <div class="feature-copy">
+          <p class="feature-num">02 — SORTIEREN</p>
+          <h3>Die KI kategorisiert für dich</h3>
+          <p>Artikel, Beträge, Ort und Kategorie werden automatisch ausgelesen. Du prüfst kurz — statt selbst zu sortieren.</p>
+          <div class="feature-tokens">
+            <span class="token solid">☕ Kaffee &amp; Getränke</span>
+            <span class="token solid">🛒 Lebensmittel</span>
+            <span class="token solid">🚌 Mobilität</span>
+          </div>
+        </div>
+      </article>
+
+      <!-- Feature 3 -->
+      <article class="feature reveal">
+        <div class="feature-media">
+          <div class="feature-device"><span class="halo" aria-hidden="true"></span><img src="assets/screen-home.png" alt="Konsum-App: Budget-Ring mit verbleibendem Betrag und Spielraum heute"></div>
+        </div>
+        <div class="feature-copy">
+          <p class="feature-num">03 — EINORDNEN</p>
+          <h3>Budget als Orientierung</h3>
+          <p>Eine grobe Schätzung reicht. Konsum zeigt dir einen Tagesrahmen mit ca.-Werten — Orientierung statt Vorschrift.</p>
+          <div class="feature-tokens">
+            <span class="token solid">Tagesrahmen ca. 23 €</span>
+            <span class="token">basierend auf deiner Schätzung</span>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- NICHT-BLOCK -->
+  <section class="section" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="nicht reveal">
+        <p class="kicker">Ehrlich gesagt</p>
+        <h2>Was Konsum bewusst <em>nicht</em> ist.</h2>
+        <div class="nicht-grid">
+          <div class="nicht-item">
+            <span class="nicht-x" aria-hidden="true">✕</span>
+            <div><h3>Kein Haushaltsbuch</h3><p>Du musst nicht jeden Cent abstimmen. Konsum macht Alltagsausgaben sichtbar — mehr nicht.</p></div>
+          </div>
+          <div class="nicht-item">
+            <span class="nicht-x" aria-hidden="true">✕</span>
+            <div><h3>Keine Kontoverbindung</h3><p>Deine Bank bleibt außen vor. Du entscheidest, was Konsum sieht.</p></div>
+          </div>
+          <div class="nicht-item">
+            <span class="nicht-x" aria-hidden="true">✕</span>
+            <div><h3>Keine Buchhaltung</h3><p>Ca.-Werte statt falscher Präzision. Für Orientierung reicht das.</p></div>
+          </div>
+          <div class="nicht-item">
+            <span class="nicht-x" aria-hidden="true">✕</span>
+            <div><h3>Keine Sparvorgaben</h3><p>Konsum verspricht Klarheit, nicht Ersparnis. Was du daraus machst, bleibt bei dir.</p></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BETA CTA -->
+  <section class="section" id="beta" style="padding-top: 0;">
+    <div class="wrap">
+      <div class="beta reveal">
+        <div class="beta-inner">
+          <div>
+            <img class="icon" src="assets/konsum-icon.svg" alt="">
+            <h2>Konsum ist in der Beta.</h2>
+            <p>Hilf mit, die App zu formen: Über TestFlight bekommst du frühe Versionen direkt aufs iPhone — und dein Feedback fließt direkt ein.</p>
+            <a class="btn btn-light" href="#">Beta über TestFlight beitreten</a>
+            <p class="beta-note">Für iOS · über Apples TestFlight</p>
+          </div>
+          <div class="beta-shot" aria-hidden="true">
+            <img src="assets/screen-erfassen-v2.png" alt="">
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <span>© 2026 Konsum</span>
+    <div class="foot-links">
+      <a href="datenschutz.html">Datenschutz</a>
+      <a href="impressum.html">Impressum</a>
+      <a href="mailto:ralf@braitling.de">Kontakt</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var motionOK = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+
+    // Scroll reveal
+    if (motionOK && "IntersectionObserver" in window) {
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+        });
+      }, { threshold: 0.12 });
+      document.querySelectorAll(".reveal").forEach(function (el) { io.observe(el); });
+    } else {
+      document.querySelectorAll(".reveal").forEach(function (el) { el.classList.add("in"); });
+    }
+
+    // Animated sequence (the magic loop)
+    var seq = document.getElementById("seq");
+    var typed = document.getElementById("typed");
+    var caret = document.getElementById("caret");
+    var placeEl = document.getElementById("seq-place");
+    var totalEl = document.getElementById("seq-total");
+    var itemsEl = document.getElementById("seq-items");
+
+    var examples = [
+      { text: "Bäcker Cappuccino 3,50 Brezn 1,20", spoken: false, place: "Bäcker", total: "4,70 €",
+        items: [
+          { name: "Cappuccino", cat: "☕ Getränke", sub: "🧃 nicht alkoholisch", amount: "3,50 €" },
+          { name: "Brezn", cat: "🛒 Lebensmittel", sub: "🥐 Backwaren", amount: "1,20 €" }
+        ] },
+      { text: "Bahnhof Duplo 79 cent", spoken: true, place: "Bahnhof", total: "0,79 €",
+        items: [
+          { name: "Duplo", cat: "🛒 Lebensmittel", sub: "🍭 Süssigkeiten", amount: "0,79 €" }
+        ] }
+    ];
+
+    function applyResult(ex) {
+      placeEl.textContent = ex.place;
+      totalEl.textContent = ex.total;
+      itemsEl.innerHTML = "";
+      ex.items.forEach(function (it, idx) {
+        var row = document.createElement("div");
+        row.className = "ritem";
+        row.innerHTML =
+          '<div class="ritem-top"><span class="ritem-name"></span><span class="ritem-amt"></span></div>' +
+          '<div class="ritem-tags"><span class="rtag cat"></span><span class="rtag sub"></span></div>';
+        row.querySelector(".ritem-name").textContent = it.name;
+        row.querySelector(".ritem-amt").textContent = it.amount;
+        var base = idx * 0.2 + 0.1;
+        var catEl = row.querySelector(".rtag.cat");
+        catEl.textContent = it.cat;
+        catEl.style.transitionDelay = base + "s";
+        var subEl = row.querySelector(".rtag.sub");
+        subEl.textContent = it.sub;
+        subEl.style.transitionDelay = (base + 0.12) + "s";
+        itemsEl.appendChild(row);
+      });
+    }
+
+    if (seq && !motionOK) {
+      var ex0 = examples[0];
+      typed.textContent = ex0.text;
+      caret.style.display = "none";
+      applyResult(ex0);
+      seq.classList.add("resolved");
+    } else if (seq) {
+      var i = 0;
+      var wait = function (ms) { return new Promise(function (res) { setTimeout(res, ms); }); };
+      var typeText = async function (text, perWord) {
+        typed.textContent = "";
+        if (perWord) {
+          var words = text.split(" ");
+          for (var w = 0; w < words.length; w++) {
+            typed.textContent += (w ? " " : "") + words[w];
+            typed.scrollLeft = typed.scrollWidth;
+            await wait(260);
+          }
+        } else {
+          for (var c = 0; c < text.length; c++) {
+            typed.textContent += text[c];
+            typed.scrollLeft = typed.scrollWidth;
+            await wait(42 + Math.random() * 36);
+          }
+        }
+      };
+      (async function loop() {
+        for (;;) {
+          var ex = examples[i % examples.length];
+          i++;
+          seq.classList.remove("resolved", "processing");
+          seq.classList.toggle("speaking", ex.spoken);
+          typed.textContent = "";
+          await wait(600);
+          await typeText(ex.text, ex.spoken);
+          await wait(450);
+          seq.classList.remove("speaking");
+          seq.classList.add("processing");
+          await wait(1500);
+          seq.classList.remove("processing");
+          applyResult(ex);
+          seq.classList.add("resolved");
+          await wait(5000);
+        }
+      })();
+    }
+  })();
+</script>
+
+</body>
+</html>
